@@ -25,3 +25,8 @@ dist-ssr
 
 # Test coverage
 coverage
+
+# Screenshots and local environment
+screenshots/
+.env
+.env.*
