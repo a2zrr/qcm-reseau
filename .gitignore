@@ -30,3 +30,5 @@ coverage
 screenshots/
 .env
 .env.*
+.vercel
+.env*
