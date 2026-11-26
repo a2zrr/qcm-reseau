@@ -18,7 +18,13 @@ Autres commandes :
 npm run build      # vérification TypeScript + build de production (dist/)
 npm run preview    # servir le build de production
 npm test           # tests unitaires (Vitest)
+npm run test:upgrade  # test de mise à jour (Playwright) : progression de l'ancien build conservée
 ```
+
+Le test de mise à jour compare la version `main` (ou `OLD_REF`) et la version courante, servies sur le même
+port. Il lit la progression sauvegardée par l'ancienne version et vérifie qu'elle est restaurée. Il a besoin d'un
+navigateur : `CHROME_PATH=/chemin/vers/chrome npm run test:upgrade`, ou `npx playwright-core install chromium` une fois.
+Les constantes `OLD` et `NEW` en haut de `e2e/upgrade.mjs` sont à mettre à jour pour un nouveau QCM.
 
 ## Utilisation
 
