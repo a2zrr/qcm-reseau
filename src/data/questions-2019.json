@@ -1,0 +1,236 @@
+{
+  "title": "QCM Réseau 2019",
+  "source": "L3M_SR — QCM 2 (Moodle UGA, novembre 2019)",
+  "pointsPerQuestion": 1,
+  "gradeScale": 20,
+  "schema": {
+    "types": {
+      "single": "one answer (radio buttons). 'correct' = list with one option index (0-based).",
+      "multiple": "at least one answer (checkboxes). 'correct' = list of option indexes (0-based). Never tell the user how many are correct.",
+      "match": "each blank gets one choice from 'choices' (dropdown). 'blanks[i].answer' = the correct choice text.",
+      "order": "put 'items' in the right order. 'items' = order shown at start, 'correct' = right order (item texts)."
+    },
+    "numbering": "'letters' => a. b. c. (default) | 'numbers' => 1. 2. 3. | 'none'",
+    "formatting": "text between **double asterisks** is bold; \\n is a line break",
+    "note": "optional; shown only in the review, after submission"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "order",
+      "prompt": "Remettez les différentes entêtes de ce paquet dans le bon ordre",
+      "items": ["Entête Ethernet", "CRC Ethernet", "Entête IP", "Entête UDP", "Données Appli."],
+      "correct": ["Entête Ethernet", "Entête IP", "Entête UDP", "Données Appli.", "CRC Ethernet"],
+      "note": "Le PDF ne donne pas la correction (et la 5e étiquette est coupée) : ordre standard d'une trame Ethernet, le CRC est en fin de trame."
+    },
+    {
+      "id": 2,
+      "type": "multiple",
+      "prompt": "Deux ordinateurs X et Y possèdent la même adresse IP sur un réseau.\nOn effectue un ping (1 seul paquet ICMP Request) vers cette adresse commune depuis un troisième ordinateur Z. Toutes les tables ARP sont vides avant le ping.",
+      "options": [
+        "Le ping n'aura jamais de réponse (ICMP reply)",
+        "Le Arp Request envoyé par Z aura deux réponses ARP reply.",
+        "Le ping aura une seule réponse (ICMP reply) d'un des deux ordinateurs X ou Y de façon aléatoire",
+        "Ce n'est pas possible d'avoir deux ordinateurs possédant la même adresse IP sur un réseau.",
+        "Le ping aura deux réponses (ICMP reply) provenant de X et Y"
+      ],
+      "correct": [1, 2],
+      "numbering": "numbers"
+    },
+    {
+      "id": 3,
+      "type": "multiple",
+      "prompt": "L'émission d'un paquet Arp gratuit est effectuer dans le(s) cas suivant:",
+      "options": [
+        "Demande de gratuité d'accès au réseau effectuée par une machine",
+        "Réception d'un paquet ARP request non autorisé",
+        "Configuration d'une carte réseau sur une machine relié au réseau."
+      ],
+      "correct": [2]
+    },
+    {
+      "id": 4,
+      "type": "multiple",
+      "prompt": "Le protocole ARP réagit à la réception d'un ARP reply contenant le couple d'adresse IP/Ethernet: (AdIP, AdEthernet), que fait il à ce moment là ?",
+      "options": [
+        "Il répond à IP en fournissant l'adresse Ethernet AdEthernet pour AdIP.",
+        "Si (AdIP, AdEthernet) n'est pas dans la table, il l'ajoute et arme un timer d'effacement.",
+        "Il émet un ARP request.",
+        "Il supprime (AdIP, AdEthernet) de la table ARP",
+        "Si AdIP est déjà dans la table, mais associée à une autre adresse Ethernet (différente de AdEthernet) il remplace cette adresse par celle figurant dans le paquet ARP reply.",
+        "Si (AdIP, AdEthernet) est déjà dans la table, il ne fait rien.",
+        "Si (AdIP, AdEthernet) est déjà dans la table, il réarme le timer d'effacement associé."
+      ],
+      "correct": [0, 1, 4, 6]
+    },
+    {
+      "id": 5,
+      "type": "multiple",
+      "prompt": "Le protocole ARP réagit à la réception d'un ARP request contenant l'adresse IP AdIP, que fait il à ce moment là ?",
+      "options": [
+        "Si l'adresse IP est noté PUB dans la table ARP, il émet un ARP reply contenant l'adresse Ethernet correspondante",
+        "Il émet un paquet ARP request",
+        "Si l'adresse IP est celle de la machine réceptrice, il rajoute à la table ARP les adresses IP et Ethernet de l'émetteur du paquet ARP",
+        "Il rajoute dans tous les cas à la table ARP les adresses IP et Ethernet de l'émetteur du paquet RIP",
+        "Il répond à IP en fournissant l'adresse Ethernet AdEthernet pour AdIP.",
+        "Si l'adresse IP est celle de la machine réceptrice, il émet un ARP reply contenant son adresse Ethernet",
+        "Si l'adresse IP n'est pas la sienne, il émet un ARP reply."
+      ],
+      "correct": [0, 2, 5]
+    },
+    {
+      "id": 6,
+      "type": "multiple",
+      "prompt": "Le protocole ARP réagit à une demande du protocole IP concernant une adresse IP AdIP, que fait il alors ?",
+      "options": [
+        "Envoie toujours un ARP Request concernant AdIP",
+        "Si AdIP est dans la table ARP, supprime AdIP de la table ARP",
+        "Arme un timer",
+        "Si AdIP est dans la table ARP, il fournit au protocole IP l'adresse Ethernet correspondante",
+        "Consulte la table ARP et n'envoie un ARP Request que dans le cas où AdIP n'est pas déjà dans la table"
+      ],
+      "correct": [3, 4]
+    },
+    {
+      "id": 7,
+      "type": "multiple",
+      "prompt": "Le protocole Ethernet reçoit depuis le réseau un paquet contenant des octets de bourrage, il effectue alors l'action suivante:",
+      "options": [
+        "Il supprime l'entête Ethernet et le bourrage puis passe les données à la couche supérieure",
+        "Il passe le paquet entier (Entête Ethernet + données Ethernet) à la couche supérieure",
+        "Il supprime l'entête Ethernet et passe les données à la couche supérieure"
+      ],
+      "correct": [2],
+      "numbering": "numbers"
+    },
+    {
+      "id": 8,
+      "type": "multiple",
+      "prompt": "Le champ CRC du protocole Ethernet sert à :",
+      "options": [
+        "Détecter si les données Ethernet n'ont pas été modifiées pendant le transit du paquet sur le réseau",
+        "Détecter les pertes de paquets",
+        "Corriger les erreurs dans les données Ethernet survenues pendant le transit du paquet sur le réseau",
+        "Donner un mot de passe permettant de chiffrer le paquet",
+        "Chiffrer les données Ethernet",
+        "Identifier l'ordinateur qui a émis le paquet Ethernet"
+      ],
+      "correct": [0],
+      "numbering": "numbers",
+      "note": "Commentaire du prof sur « Détecter les pertes de paquets » : non, seulement à détecter les erreurs dans un paquet."
+    },
+    {
+      "id": 9,
+      "type": "multiple",
+      "prompt": "Le protocole DHCP permet de :",
+      "options": [
+        "Obtenir l'adresse d'un serveur DNS permettant de faire de la résolution de nom.",
+        "Accéder au proxy d'un serveur WEB",
+        "Obtenir automatiquement une adresse IP.",
+        "Obtenir le prix d'un accès au réseau.",
+        "Obtenir automatiquement une adresse Ethernet.",
+        "Effectuer une résolution DNS, permettant d'associer une adresse IP à un nom.",
+        "Connaitre les adresses de ses voisins directs.",
+        "Obtenir l'adresse d'un routeur par défaut."
+      ],
+      "correct": [0, 2, 7]
+    },
+    {
+      "id": 10,
+      "type": "single",
+      "prompt": "Trois machines A, B et C sont connectées à un concentrateur (hub). A envoie une suite de messages à B. Est-ce que C peut observer les paquets ?",
+      "options": ["Oui", "Non", "Ça dépend."],
+      "correct": [0]
+    },
+    {
+      "id": 11,
+      "type": "multiple",
+      "prompt": "Pour quelle(s) raison(s) le protocole Ethernet rajoute des octets de bourrage à la suite des données qu'il envoie dans une trame ?",
+      "options": [
+        "Pour que la taille de la trame atteigne un minimum permettant d'être sûr que le paquet ne soit pas détruit",
+        "Pour que la taille des données soit un multiple de 4.",
+        "Pour que la taille de la trame atteigne un minimum permettant d'être sûr de détecter toutes les collisions",
+        "Parce que l'émission de petits paquets est pénalisante pour les performances du réseau"
+      ],
+      "correct": [2]
+    },
+    {
+      "id": 12,
+      "type": "single",
+      "prompt": "Quelle est la pile de protocoles utilisée lors de l'envoi d'un message avec telnet entre 2 machine de la salle de TP ?",
+      "options": [
+        "Ethernet, IP, Telnet",
+        "Ethernet, IP, TCP, Telnet",
+        "Ethernet, IP, UDP, Telnet",
+        "Ethernet, TCP, Telnet"
+      ],
+      "correct": [1]
+    },
+    {
+      "id": 13,
+      "type": "multiple",
+      "prompt": "Quel protocole nous permet de faire la translation entre les adresses IP et les adresses MAC :",
+      "options": ["UDP", "ARP", "DNS", "ICMP"],
+      "correct": [1]
+    },
+    {
+      "id": 14,
+      "type": "multiple",
+      "prompt": "L'outil **ping** permet de savoir si un ordinateur X est présent sur le réseau et permet de mesurer le temps d'aller retour sur le réseau vers X.\nCe temps d'aller retour est calculé à l'aide de :",
+      "options": [
+        "la valeur de l'instant d'émission se trouvant dans le paquet **ICMP reply**.",
+        "la valeur des instants d'émission et de réception du paquet **ICMP request** se trouvant dans le paquet **ICMP reply**.",
+        "l'armement d'un chronomètre sur la machine réceptrice au moment de l'émission du paquet **ICMP reply**",
+        "l'armement d'un chronomètre sur la machine émettrice au moment de l'émission du paquet **ICMP request**"
+      ],
+      "correct": [3]
+    },
+    {
+      "id": 15,
+      "type": "single",
+      "prompt": "L'acronyme DHCP veut dire :",
+      "options": [
+        "Datagram Host Configuration Protocol",
+        "Dynamic Host Configuration Protocol",
+        "Discover Host Control Protocol",
+        "Datagram Host Congestion Protocol",
+        "Dynamic Home Congratulation Protocol"
+      ],
+      "correct": [1]
+    },
+    {
+      "id": 16,
+      "type": "multiple",
+      "prompt": "Le protocole Ethernet laisse un silence sur le réseau entre chaque trame qu'il émet afin de :",
+      "options": [
+        "détecter les collisions",
+        "permettre que le réseau ne soit pas surchargé.",
+        "reprendre son souffle avant d'émettre un nouveau paquet",
+        "permettre à d'autres machines d'émettre sur le réseau.",
+        "permettre au récepteur de détecter la fin de la trame."
+      ],
+      "correct": [4]
+    },
+    {
+      "id": 17,
+      "type": "multiple",
+      "prompt": "Le protocole Ethernet reçoit une trame depuis le réseau, comment connaît il sa taille ?",
+      "options": [
+        "Grâce à la délimitation de la trame par un marqueur de début et un silence en fin de trame",
+        "Grâce à un don de voyance",
+        "Grâce à la délimitation de la trame par un marqueur de début et un marqueur de fin.",
+        "Grâce à un champ de l'entête contenant la taille"
+      ],
+      "correct": [0]
+    },
+    {
+      "id": 18,
+      "type": "single",
+      "prompt": "Le champ CRC d'Ethernet permet de détecter tous les changements survenus dans les données lors du transport sur le réseau",
+      "options": ["Vrai", "Faux"],
+      "correct": [1],
+      "numbering": "none",
+      "note": "Commentaire du prof : aucun moyen de détection n'est sûr à 100 %."
+    }
+  ]
+}

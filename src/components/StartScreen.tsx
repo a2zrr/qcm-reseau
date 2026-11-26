@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { QUESTIONS, quizFile } from '../lib/questions';
+import type { QuizDef } from '../lib/quizzes';
 
 interface StartScreenProps {
+  quiz: QuizDef;
   onStart: (shuffle: boolean) => void;
 }
 
-export function StartScreen({ onStart }: StartScreenProps) {
+export function StartScreen({ quiz, onStart }: StartScreenProps) {
   const [shuffle, setShuffle] = useState(false);
   return (
     <main className="screen start">
-      <h1 className="screen-title">{quizFile.title}</h1>
-      <p>{QUESTIONS.length} questions. Répondez à votre rythme : vos réponses sont enregistrées sur cet appareil.</p>
+      <h1 className="screen-title">{quiz.file.title}</h1>
+      <p>{quiz.questions.length} questions. Répondez à votre rythme : vos réponses sont enregistrées sur cet appareil.</p>
       <p className="muted">Les bonnes réponses ne sont pas affichées pendant le test. Elles le seront après l'envoi.</p>
 
       <label className="switch-row">

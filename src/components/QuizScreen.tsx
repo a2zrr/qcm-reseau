@@ -1,31 +1,32 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { Answer, Attempt } from '../types';
 import { isAnswered } from '../lib/attempt';
-import { PAGES, QUESTIONS, pageOfQuestion, quizFile } from '../lib/questions';
+import type { QuizDef } from '../lib/quizzes';
 import { Modal } from './Modal';
 import { PageIndicator, SwipeArea } from './Pager';
 import { usePageKeys } from '../hooks/usePageKeys';
 import { QuestionCard } from './QuestionCard';
 
 interface QuizScreenProps {
+  quiz: QuizDef;
   attempt: Attempt;
   onAnswer: (id: number, answer: Answer | undefined) => void;
   onPage: (page: number) => void;
   onSubmit: () => void;
 }
 
-export function QuizScreen({ attempt, onAnswer, onPage, onSubmit }: QuizScreenProps) {
+export function QuizScreen({ quiz, attempt, onAnswer, onPage, onSubmit }: QuizScreenProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
-  const pageCount = PAGES.length;
+  const pageCount = quiz.pages.length;
   const page = Math.min(Math.max(attempt.page, 0), pageCount - 1);
 
   const answeredIds = useMemo(
-    () => new Set(QUESTIONS.filter((q) => isAnswered(q, attempt.answers[q.id])).map((q) => q.id)),
-    [attempt.answers],
+    () => new Set(quiz.questions.filter((q) => isAnswered(q, attempt.answers[q.id])).map((q) => q.id)),
+    [attempt.answers, quiz.questions],
   );
-  const unanswered = QUESTIONS.filter((q) => !answeredIds.has(q.id)).map((q) => q.id);
-  const total = QUESTIONS.length;
+  const unanswered = quiz.questions.filter((q) => !answeredIds.has(q.id)).map((q) => q.id);
+  const total = quiz.questions.length;
   const pct = total > 0 ? (answeredIds.size / total) * 100 : 0;
 
   const goPage = useCallback(
@@ -47,13 +48,13 @@ export function QuizScreen({ attempt, onAnswer, onPage, onSubmit }: QuizScreenPr
 
   const jumpTo = (id: number) => {
     setConfirmOpen(false);
-    goPage(pageOfQuestion(id));
+    goPage(quiz.pageOf.get(id) ?? 0);
     requestAnimationFrame(() => {
       document.getElementById(`q-${id}-title`)?.focus({ preventScroll: true });
     });
   };
 
-  const pageContents = PAGES.map((pageQs) => (
+  const pageContents = quiz.pages.map((pageQs) => (
     <div className="page-inner" key={pageQs[0].id}>
       {pageQs.map((q) => (
         <QuestionCard
@@ -70,7 +71,7 @@ export function QuizScreen({ attempt, onAnswer, onPage, onSubmit }: QuizScreenPr
   return (
     <div className="quiz">
       <header className="quiz-header" ref={headerRef}>
-        <h1 className="screen-title">{quizFile.title}</h1>
+        <h1 className="screen-title">{quiz.file.title}</h1>
         <p className="progress-text" aria-live="polite">
           {answeredIds.size} / {total} questions répondues
         </p>
@@ -87,7 +88,7 @@ export function QuizScreen({ attempt, onAnswer, onPage, onSubmit }: QuizScreenPr
         <PageIndicator
           count={pageCount}
           current={page}
-          isDone={(p) => PAGES[p].every((q) => answeredIds.has(q.id))}
+          isDone={(p) => quiz.pages[p].every((q) => answeredIds.has(q.id))}
           onGo={goPage}
         />
       </header>

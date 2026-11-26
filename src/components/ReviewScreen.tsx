@@ -4,7 +4,7 @@ import type { AttemptSummary, QuestionScore, Status } from '../lib/scoring';
 import { orderSolution } from '../lib/scoring';
 import { displayCount, identity } from '../lib/attempt';
 import { fmtNumber, markerFor } from '../lib/format';
-import { QUESTIONS, chunk, PAGE_SIZE, quizFile } from '../lib/questions';
+import { PAGE_SIZE, chunk, type QuizDef } from '../lib/quizzes';
 import { PageIndicator, SwipeArea } from './Pager';
 import { usePageKeys } from '../hooks/usePageKeys';
 import { RichText } from './RichText';
@@ -16,18 +16,19 @@ const STATUS_LABEL: Record<Status, string> = {
 };
 
 interface ReviewScreenProps {
+  quiz: QuizDef;
   attempt: Attempt;
   summary: AttemptSummary;
   onBack: () => void;
 }
 
-export function ReviewScreen({ attempt, summary, onBack }: ReviewScreenProps) {
+export function ReviewScreen({ quiz, attempt, summary, onBack }: ReviewScreenProps) {
   const [onlyErrors, setOnlyErrors] = useState(false);
   const [page, setPage] = useState(0);
 
   const list = useMemo(
-    () => (onlyErrors ? QUESTIONS.filter((q) => summary.perQuestion[q.id].status !== 'correct') : QUESTIONS),
-    [onlyErrors, summary],
+    () => (onlyErrors ? quiz.questions.filter((q) => summary.perQuestion[q.id].status !== 'correct') : quiz.questions),
+    [onlyErrors, quiz, summary],
   );
   const pages = useMemo(() => chunk(list, PAGE_SIZE), [list]);
   const pageCount = pages.length;
@@ -48,7 +49,7 @@ export function ReviewScreen({ attempt, summary, onBack }: ReviewScreenProps) {
           perm={attempt.perms[q.id] ?? identity(displayCount(q))}
           answer={attempt.answers[q.id]}
           score={summary.perQuestion[q.id]}
-          pointsPerQuestion={quizFile.pointsPerQuestion}
+          pointsPerQuestion={quiz.file.pointsPerQuestion}
         />
       ))}
     </div>

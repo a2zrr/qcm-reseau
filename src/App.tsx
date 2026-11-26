@@ -1,82 +1,31 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { Answer, Attempt } from './types';
-import { buildPerms, withAnswer } from './lib/attempt';
-import { QUESTIONS, quizFile } from './lib/questions';
-import { clearAttempt, loadAttempt, saveAttempt } from './lib/storage';
-import { summarize } from './lib/scoring';
-import { StartScreen } from './components/StartScreen';
-import { QuizScreen } from './components/QuizScreen';
-import { ResultsScreen } from './components/ResultsScreen';
-import { ReviewScreen } from './components/ReviewScreen';
+import { useEffect, useState } from 'react';
+import { QUIZZES, getQuiz, type QuizId } from './lib/quizzes';
+import { loadAttempt } from './lib/storage';
+import { HomeScreen } from './components/HomeScreen';
+import { QuizApp } from './components/QuizApp';
+
+type Route = 'home' | QuizId;
+
+/** Routes live in the hash (#accueil, #2021, #2019): no new URL paths, so `/` is unchanged. */
+function routeFromHash(hash: string): Route | null {
+  if (hash === '#accueil') return 'home';
+  const quiz = QUIZZES.find((q) => hash === `#${q.id}`);
+  return quiz ? quiz.id : null;
+}
 
 export default function App() {
-  const [attempt, setAttempt] = useState<Attempt | null>(() => loadAttempt());
+  const [hash, setHash] = useState(() => window.location.hash);
+  // With no hash, a 2021 attempt in progress (or submitted) opens straight away, as before.
+  // Decided once at load so that the quiz does not disappear mid-session.
+  const [initial] = useState<Route>(() => (loadAttempt(getQuiz('2021').storageKey) ? '2021' : 'home'));
 
   useEffect(() => {
-    if (attempt) saveAttempt(attempt);
-    else clearAttempt();
-  }, [attempt]);
-
-  const update = useCallback((fn: (a: Attempt) => Attempt) => {
-    setAttempt((a) => (a ? fn(a) : a));
+    const onHash = () => setHash(window.location.hash);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  const summary = useMemo(
-    () =>
-      attempt
-        ? summarize(QUESTIONS, attempt.answers, quizFile.pointsPerQuestion, quizFile.gradeScale)
-        : null,
-    [attempt],
-  );
-
-  if (!attempt) {
-    return (
-      <StartScreen
-        onStart={(shuffle) =>
-          setAttempt({
-            version: 1,
-            startedAt: new Date().toISOString(),
-            shuffle,
-            perms: buildPerms(QUESTIONS, shuffle),
-            answers: {},
-            view: 'quiz',
-            page: 0,
-          })
-        }
-      />
-    );
-  }
-
-  if (attempt.view === 'quiz') {
-    return (
-      <QuizScreen
-        attempt={attempt}
-        onAnswer={(id: number, answer: Answer | undefined) =>
-          update((a) => ({ ...a, answers: withAnswer(a.answers, id, answer) }))
-        }
-        onPage={(page) => update((a) => ({ ...a, page }))}
-        onSubmit={() => update((a) => ({ ...a, view: 'results' }))}
-      />
-    );
-  }
-
-  if (!summary) return null;
-
-  if (attempt.view === 'review') {
-    return (
-      <ReviewScreen
-        attempt={attempt}
-        summary={summary}
-        onBack={() => update((a) => ({ ...a, view: 'results' }))}
-      />
-    );
-  }
-
-  return (
-    <ResultsScreen
-      summary={summary}
-      onReview={() => update((a) => ({ ...a, view: 'review' }))}
-      onRestart={() => setAttempt(null)}
-    />
-  );
+  const route = routeFromHash(hash) ?? initial;
+  if (route === 'home') return <HomeScreen />;
+  return <QuizApp key={route} quiz={getQuiz(route)} />;
 }

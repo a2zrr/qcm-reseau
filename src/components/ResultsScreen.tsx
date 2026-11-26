@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import type { AttemptSummary } from '../lib/scoring';
 import { fmtFixed, fmtNumber } from '../lib/format';
-import { quizFile } from '../lib/questions';
+import type { QuizDef } from '../lib/quizzes';
 import { Modal } from './Modal';
 
 interface ResultsScreenProps {
+  quiz: QuizDef;
   summary: AttemptSummary;
   onReview: () => void;
   onRestart: () => void;
 }
 
-export function ResultsScreen({ summary, onReview, onRestart }: ResultsScreenProps) {
+export function ResultsScreen({ quiz, summary, onReview, onRestart }: ResultsScreenProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const { counts } = summary;
   return (
@@ -22,7 +23,7 @@ export function ResultsScreen({ summary, onReview, onRestart }: ResultsScreenPro
           {fmtNumber(summary.points)} <span>/ {summary.maxPoints}</span>
         </p>
         <p className="score-grade">
-          Note : <strong>{fmtFixed(summary.grade20, 2)} / {quizFile.gradeScale}</strong>
+          Note : <strong>{fmtFixed(summary.grade20, 2)} / {quiz.file.gradeScale}</strong>
         </p>
         <p className="muted">Pourcentage : {fmtFixed(summary.percent, 1)} %</p>
       </section>

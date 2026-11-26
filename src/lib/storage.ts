@@ -1,10 +1,10 @@
 import type { Attempt } from '../types';
 
-const KEY = 'qcm-reseau:attempt';
+// Keys come from the quiz definitions (see quizzes.ts). Stored format: an Attempt, version 1.
 
-export function loadAttempt(): Attempt | null {
+export function loadAttempt(key: string): Attempt | null {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Attempt;
     if (
@@ -22,17 +22,17 @@ export function loadAttempt(): Attempt | null {
   return null;
 }
 
-export function saveAttempt(attempt: Attempt): void {
+export function saveAttempt(key: string, attempt: Attempt): void {
   try {
-    localStorage.setItem(KEY, JSON.stringify(attempt));
+    localStorage.setItem(key, JSON.stringify(attempt));
   } catch {
     // Storage full or disabled: the quiz still works for this session.
   }
 }
 
-export function clearAttempt(): void {
+export function clearAttempt(key: string): void {
   try {
-    localStorage.removeItem(KEY);
+    localStorage.removeItem(key);
   } catch {
     // Nothing to clear.
   }
